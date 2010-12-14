@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Platform.js</title>
+	<link type="text/css" rel="stylesheet" href="style.css" />
+	<script type="text/javascript" src="jquery.js"></script> 
+	<script type="text/javascript" charset="utf-8">
+		
+		$(document).ready(function() {
+		   
+			if ("WebSocket" in window) 
+			{
+			  	var ws = new WebSocket("ws://localhost:8000");
+
+				ws.onopen = function() {
+					write("Socket opened ...");
+				};
+
+			  	ws.onmessage = function (evt) { 
+					write(evet.data);
+				};
+
+			  	ws.onclose = function() {
+					write("Socket closed.");
+				};
+			} 
+			else 
+			{
+				write("Browser doesn't support WebSockets!");
+			}
+		});
+		
+		function write(content) {
+			
+			$("#output").html("<div class='message'><div class='time'>" + 
+								new Date().getHours() + ":" + new Date().getMinutes() +
+								"</div>" + content + "</div>");
+		}
+
+	</script>
+	
+</head>
+<body id="index">
+	<h1>Platform.js</h1>
+	<h2>Output</h2>
+	<div id="output">
+	</div>
+</body>
+</html>
