@@ -7,11 +7,13 @@
 	<script type="text/javascript" src="jquery.js"></script> 
 	<script type="text/javascript" charset="utf-8">
 		
+		var ws = null;
+		
 		$(document).ready(function() {
 		   
 			if ("WebSocket" in window) 
 			{
-			  	var ws = new WebSocket("ws://localhost:8000");
+			  	ws = new WebSocket("ws://localhost:8000");
 
 				ws.onopen = function() {
 					write("Socket opened ...");
@@ -33,18 +35,34 @@
 		
 		function write(content) {
 			
-			$("#output").html("<div class='message'><div class='time'>" + 
-								new Date().getHours() + ":" + new Date().getMinutes() +
-								"</div>" + content + "</div>");
+			$("#output").html("<div class='message'>" +
+								"<span class='time'>" + 
+									new Date().getHours() + ":" + 
+									new Date().getMinutes() + ":" + 
+									new Date().getSeconds() + 
+								"</span>" + 
+								content + 
+								"</div>");
 		}
+		
+		$(document).ready(function()
+		{
+			$("#btnSubmit").click(function () {
+				ws.send($('#lblInput').val());
+			});
+		});
 
 	</script>
 	
 </head>
 <body id="index">
-	<h1>Platform.js</h1>
-	<h2>Output</h2>
-	<div id="output">
+	<div id="content">
+		<h1>Platform.js</h1>
+		
+		<input id="lblInput" size="60" />
+		<input id="btnSubmit" type="button" value="Send &rarr;" />
+		
+		<div id="output"></div>
 	</div>
 </body>
 </html>
