@@ -5,62 +5,30 @@
 	<title>Platform.js</title>
 	<link type="text/css" rel="stylesheet" href="style.css" />
 	<script type="text/javascript" src="jquery.js"></script> 
+	<script type="text/javascript" src="chat.js"></script>
 	<script type="text/javascript" charset="utf-8">
-		
-		var ws = null;
-		
+		var chat = new Chat();
+
 		$(document).ready(function() {
-		   
-			if ("WebSocket" in window) 
-			{
-			  	ws = new WebSocket("ws://localhost:8000");
-
-				ws.onopen = function() {
-					write("Socket opened ...");
-				};
-
-			  	ws.onmessage = function (evt) { 
-					write(evet.data);
-				};
-
-			  	ws.onclose = function() {
-					write("Socket closed.");
-				};
-			} 
-			else 
-			{
-				write("Browser doesn't support WebSockets!");
-			}
+			chat.init();
 		});
-		
-		function write(content) {
-			
-			$("#output").html("<div class='message'>" +
-								"<span class='time'>" + 
-									new Date().getHours() + ":" + 
-									new Date().getMinutes() + ":" + 
-									new Date().getSeconds() + 
-								"</span>" + 
-								content + 
-								"</div>");
-		}
-		
-		$(document).ready(function()
-		{
-			$("#btnSubmit").click(function () {
-				ws.send($('#lblInput').val());
-			});
-		});
-
 	</script>
-	
 </head>
 <body id="index">
 	<div id="content">
-		<h1>Platform.js</h1>
+		<div class="center">
+			<h1>Platform.js</h1>
 		
-		<input id="lblInput" size="60" />
-		<input id="btnSubmit" type="button" value="Send &rarr;" />
+			<div id="input">
+				<input id="lblInput" size="60" />
+				<input id="btnSubmit" type="button" value="Send &rarr;" />
+			</div>
+		
+			<div id="connect">
+				ws://<input id="lblServer" size="60" value="localhost:8000" />
+				<input id="btnConnect" type="button" value="Connect &rarr;" />
+			</div>
+		</div>
 		
 		<div id="output"></div>
 	</div>
