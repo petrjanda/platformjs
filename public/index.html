@@ -9,33 +9,9 @@
 		
 		var ws = null;
 		
-		$(document).ready(function() {
-		   
-			if ("WebSocket" in window) 
-			{
-			  	ws = new WebSocket("ws://localhost:8000");
-
-				ws.onopen = function() {
-					write("Socket opened ...");
-				};
-
-			  	ws.onmessage = function (evt) { 
-					write(evet.data);
-				};
-
-			  	ws.onclose = function() {
-					write("Socket closed.");
-				};
-			} 
-			else 
-			{
-				write("Browser doesn't support WebSockets!");
-			}
-		});
-		
 		function write(content) {
 			
-			$("#output").html("<div class='message'>" +
+			$("#output").prepend("<div class='message'>" +
 								"<span class='time'>" + 
 									new Date().getHours() + ":" + 
 									new Date().getMinutes() + ":" + 
@@ -47,8 +23,48 @@
 		
 		$(document).ready(function()
 		{
-			$("#btnSubmit").click(function () {
+			$("#btnSubmit").click(function() {
 				ws.send($('#lblInput').val());
+				$('#lblInput').val('');
+				$('#lblInput').focus();				
+			});
+			
+			$('#lblInput').keydown(function(event) {
+				if(event.keyCode == 13) {
+					ws.send($('#lblInput').val());
+					$('#lblInput').val('');
+					$('#lblInput').focus();
+				}	
+			});
+			
+			$('#input').hide();
+			
+			$('#btnConnect').click(function() {
+				
+				write("Connecting server ws://" + $('#lblServer').val());
+				
+				if ("WebSocket" in window) {
+				  	ws = new WebSocket("ws://" + $('#lblServer').val());
+
+					ws.onopen = function() {
+						write("Socket opened");
+					};
+
+				  	ws.onmessage = function (evt) { 
+						write(event.data);
+					};
+
+				  	ws.onclose = function() {
+						write("Socket closed");
+					};
+				} 
+				else {
+					write("Browser doesn't support WebSockets!");
+				}	
+				
+				$('#connect').hide();
+				$('#input').show();
+				$('#lblInput').focus();	
 			});
 		});
 
@@ -57,10 +73,19 @@
 </head>
 <body id="index">
 	<div id="content">
-		<h1>Platform.js</h1>
+		<div class="center">
+			<h1>Platform.js</h1>
 		
-		<input id="lblInput" size="60" />
-		<input id="btnSubmit" type="button" value="Send &rarr;" />
+			<div id="input">
+				<input id="lblInput" size="60" />
+				<input id="btnSubmit" type="button" value="Send &rarr;" />
+			</div>
+		
+			<div id="connect">
+				ws://<input id="lblServer" size="60" value="localhost:8000" />
+				<input id="btnConnect" type="button" value="Connect &rarr;" />
+			</div>
+		</div>
 		
 		<div id="output"></div>
 	</div>
