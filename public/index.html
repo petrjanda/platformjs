@@ -5,71 +5,14 @@
 	<title>Platform.js</title>
 	<link type="text/css" rel="stylesheet" href="style.css" />
 	<script type="text/javascript" src="jquery.js"></script> 
+	<script type="text/javascript" src="chat.js"></script>
 	<script type="text/javascript" charset="utf-8">
-		
-		var ws = null;
-		
-		function write(content) {
-			
-			$("#output").prepend("<div class='message'>" +
-								"<span class='time'>" + 
-									new Date().getHours() + ":" + 
-									new Date().getMinutes() + ":" + 
-									new Date().getSeconds() + 
-								"</span>" + 
-								content + 
-								"</div>");
-		}
-		
-		$(document).ready(function()
-		{
-			$("#btnSubmit").click(function() {
-				ws.send($('#lblInput').val());
-				$('#lblInput').val('');
-				$('#lblInput').focus();				
-			});
-			
-			$('#lblInput').keydown(function(event) {
-				if(event.keyCode == 13) {
-					ws.send($('#lblInput').val());
-					$('#lblInput').val('');
-					$('#lblInput').focus();
-				}	
-			});
-			
-			$('#input').hide();
-			
-			$('#btnConnect').click(function() {
-				
-				write("Connecting server ws://" + $('#lblServer').val());
-				
-				if ("WebSocket" in window) {
-				  	ws = new WebSocket("ws://" + $('#lblServer').val());
+		var chat = new Chat();
 
-					ws.onopen = function() {
-						write("Socket opened");
-					};
-
-				  	ws.onmessage = function (evt) { 
-						write(event.data);
-					};
-
-				  	ws.onclose = function() {
-						write("Socket closed");
-					};
-				} 
-				else {
-					write("Browser doesn't support WebSockets!");
-				}	
-				
-				$('#connect').hide();
-				$('#input').show();
-				$('#lblInput').focus();	
-			});
+		$(document).ready(function() {
+			chat.init();
 		});
-
 	</script>
-	
 </head>
 <body id="index">
 	<div id="content">
