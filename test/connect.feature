@@ -6,12 +6,12 @@ Feature: Client connection
 Scenario: Connection
 	Given the running server instance
 	And the client instance
-	When i connect to server
-	Then i should see client within the clients list
+	When I connect to server
+	Then I should see client within the clients list
 	
 Scenario: Disconnection
 	Given the running server instance
 	And the client instance
-	When i connect to server
-	And i disconnect from server
-	Then i should not see client within the clients list
+	When I connect to server
+	And I disconnect from server
+	Then I should not see client within the clients list

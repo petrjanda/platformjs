@@ -16,8 +16,19 @@
 </head>
 <body id="index">
 	<div id="content">
+		<div id="menu">
+			<div class="menu-button">
+				<img id="btnChangeChannel" src="/img/shuffle.png" alt="Change channel" />
+			</div>
+			
+			<div class="menu-button">
+				<img id="btnUser" src="/img/user.png" alt="Change channel" />
+			</div>
+		</div>
+		
 		<div class="center">
 			<h1>Platform.js</h1>
+		
 		
 			<div id="input">
 				<input id="lblInput" size="60" />
@@ -25,7 +36,8 @@
 			</div>
 		
 			<div id="connect">
-				ws://<input id="lblServer" size="60" value="localhost:8000/channel" />
+				ws://<input id="lblServer" size="40" value="localhost:8000" />
+				<input id="lblChannel" size="10" value="channel" />
 				<input id="btnConnect" type="button" value="Connect &rarr;" />
 			</div>
 		</div>
