@@ -1,3 +1,3 @@
 #!/bin/sh
 
-/usr/bin/env node specs.js $@
+/usr/bin/env node --debug specs.js $@
