@@ -1,6 +1,6 @@
 require.paths.unshift(__dirname + "/lib");
 require.paths.unshift(__dirname + "/deps");
-require.paths.unshift(__dirname + "/deps/express/support/connect/lib")
+require.paths.unshift(__dirname + "/deps/express/support/connect/lib");
 
 var sys = require('sys');
 
