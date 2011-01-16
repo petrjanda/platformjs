@@ -4,11 +4,11 @@ require.paths.unshift(__dirname + "/deps/express/support/connect/lib");
 
 var sys = require('sys');
 
-var	PlatformJS = require('server'),
+var	platformjs = require('platformjs'),
 	express = require('express/lib/express');
 	
 var server = express.createServer(),
-	platformjs = new PlatformJS(server);
+	pjsserver = new platformjs.Server(server);
 
 server.use(express.staticProvider(__dirname + '/public'));
 
