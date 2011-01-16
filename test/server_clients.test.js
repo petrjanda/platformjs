@@ -5,7 +5,7 @@ var platformjs = require('platformjs')
   , should = require('should');
 
 var server = express.createServer();
-var pjss = new platformjs.Server();
+var pjss = platformjs.createServer();
 
 pjss.listen(server);
 

@@ -13,3 +13,9 @@
 [submodule "deps/should"]
 	path = deps/should
 	url = git://github.com/visionmedia/should.js.git
+[submodule "htmlparser"]
+	path = deps/htmlparser
+	url = git://github.com/tautologistics/node-htmlparser.git
+[submodule "deps/connect"]
+	path = deps/connect
+	url = git://github.com/senchalabs/connect.git
