@@ -4,3 +4,6 @@
 [submodule "deps/tobi"]
 	path = deps/tobi
 	url = git://github.com/LearnBoost/tobi.git
+[submodule "deps/expresso"]
+	path = deps/expresso
+	url = git://github.com/visionmedia/expresso.git
