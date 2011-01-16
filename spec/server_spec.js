@@ -5,19 +5,21 @@ var	PlatformJS = require('server'),
 	WebSocket = require('websocket').WebSocket,
 	sys = require('sys');
 
-describe("server", function() {
+describe("Server", function() {
 	
-	var platformjs = new PlatformJS(server);
-	var server = connect.createServer();
-	
-	server.listen(8000);
+	var platformjs, server;
 	
 	beforeEach(function() {
+		server = connect.createServer();
+		server.listen(8000);
+		
+		platformjs = new PlatformJS(server);
 		platformjs.listen(server);
 	});
 	
 	afterEach(function() {
 		platformjs.close();
+		server.close();
 	});
 	
 	describe("components", function() {
@@ -36,21 +38,42 @@ describe("server", function() {
 		
 	})
 	
-	describe("client", function() {
+	describe("channel", function() {
+		
+		it("should be created if not exists", function() {
+			
+			var channelsCount = platformjs.channels.count;
+			var client = new WebSocket('ws://localhost:8000/channel');
 
-		it("should be able to connect", function() {
-			var client = new WebSocket('ws://localhost:8000/');
-			var size = 0;
-			
 			waitsFor(function() {
-			    var key;
-				for (key in platformjs.clients.clients)
-				    if(platformjs.clients.clients.hasOwnProperty(key)) size++;
-				return size > 0;
-			}, "Client didn't connect!", 1000);
+			    return platformjs.channels.count > channelsCount;
+			}, "channel was not created!", 2000);
 			
-			expect(true).toBeTruthy();
+			runs(function() {
+				expect(platformjs.channels.count > channelsCount).toBeTruthy();
+			});
 		});
+
+
+		xit("shouldn't be created if exists", function() {
+
+			platformjs.channels.create("/channel");
+			expect(platformjs.channels.count == 1).toBeTruthy();
+			
+			var clientsCount = platformjs.clients.count
+			  , channelsCount = platformjs.channels.count;
+			
+			var client = new WebSocket('ws://localhost:8000/channel');
+
+			waitsFor(function() {
+			    return platformjs.clients.count > clientsCount;
+			}, "client was not connected!", 2000);
+			
+			runs(function() {
+				expect(platformjs.channels.count > channelsCount).toBeTruthy();
+			});
+		});
+
 	});
 	
 	describe("hooks", function () {
