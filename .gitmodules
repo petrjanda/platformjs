@@ -7,3 +7,9 @@
 [submodule "deps/expresso"]
 	path = deps/expresso
 	url = git://github.com/visionmedia/expresso.git
+[submodule "deps/jsdom"]
+	path = deps/jsdom
+	url = git://github.com/tmpvar/jsdom.git
+[submodule "deps/should"]
+	path = deps/should
+	url = git://github.com/visionmedia/should.js.git
