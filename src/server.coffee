@@ -5,10 +5,8 @@ http 		= require 'http'
 connect 	= require 'connect' 
 utils 		= connect.utils
 	
-Storage 	= require './storage' 
-Client 		= require 'client'
+Client		= require './client'
 Clients 	= require './clients'
-Channels 	= require './channels'
 
 # ## Global exceptions handling
 # 
