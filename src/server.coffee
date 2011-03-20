@@ -39,7 +39,7 @@ Server = module.exports = () ->
 #
 Server.prototype.listen = (server) ->
 	@server = server
-	
+
 	server.on 'upgrade', (request, socket, head) ->
 		self.clients.connect(new Client(utils.uid(), request, socket, head))
 	

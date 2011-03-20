@@ -1,16 +1,20 @@
 #!/usr/bin/env node
 
-require.paths.unshift(__dirname + "../lib");
+var path		= require('path')
 
-var sys 			= require('sys'),
-	Server			= require('../lib/server'),
-	express			= require('express'),
-	http			= require('http');
+require.paths.unshift(path.resolve(__dirname, '../lib/'));
+
+var sys 		= require('sys'),
+	Server		= require('server'),
+	express		= require('express'),
+	http		= require('http');
 	
 var server = http.createServer(function (req, res) {
 	res.writeHead(200, {'Content-Type': 'text/plain'});
 	res.end('Hello World\n');
-}).listen(8124, "127.0.0.1");
+});
+
+server.listen(8124, "127.0.0.1");
 
 // Create platform.js instance
 var platformjs = new Server()
