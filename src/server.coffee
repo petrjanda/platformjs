@@ -28,7 +28,7 @@ Server = module.exports = () ->
 	@clients = new Clients()
 	@server = null
 
-# # Listen
+# ## Listen
 #
 # Function to start server listening for new ws:// protocol connections. As soon as
 # server 'upgrade' event is emited client object is created and stored in internal 
@@ -38,12 +38,12 @@ Server = module.exports = () ->
 Server.prototype.listen = (server) ->
 	@server = server
 
-	server.on 'upgrade', (request, socket, head) ->
-		self.clients.connect(new Client(utils.uid(), request, socket, head))
+	server.on 'upgrade', (request, socket, head) =>
+		@clients.connect(new Client(utils.uid(), request, socket, head))
 	
 	console.log(Log.greenify('[platformjs]') + ' Started')
 
-# # Close
+# ## Close
 #
 # Close the PlatformJS server by disconnecting all clients and removing the 'upgrade'
 # listener. Webserver itself is not affected at all and continue to work.

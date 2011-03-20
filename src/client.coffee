@@ -4,6 +4,7 @@ url			= require 'url'
 Crypto		= require 'crypto'
 Buffer		= require('buffer').Buffer
 
+# # Client
 #
 # Client represents one connection to the server. Its created in case new
 # connection is coming to server, handshaked and stored in server list in
@@ -12,23 +13,22 @@ Buffer		= require('buffer').Buffer
 # It has ability to send and retrieve the data to resp. from the client machine.
 # It uses client-server websocket protocol version draft75 or draft75.
 #
-# @author Petr Janda, petrjanda@me.com
-# @version 1.0
-# @date 2011-03-14
-#
 Client = module.exports = (sid, request, socket, head) ->
 	process.EventEmitter.call(this)
 	
-	@request = request;
-	@socket = socket;
-	@sid = sid;
-	@head = head;
+	@request = request
+	@socket = socket
+	@head = head
+	
+	@sid = sid
+
 	@state = Client.STATUS_OPENING
 	
 	# Start listening for client socket data.
-	@socket.on('data', @dataHandler(data))
+	@socket.on 'data', (data) => 
+		@dataHandler(data)
 	
-	# Adjust the head according to protocol used.	
+	# Adjust the head if websocket draft76 is used to connect from client.
 	if @getVersion() == "76"
 		if @head.length >= 8
 			@request.upgradeHead = head.slice(0, 8)
@@ -38,7 +38,6 @@ Client = module.exports = (sid, request, socket, head) ->
 	
 sys.inherits(Client, Events.EventEmitter)	
 
-#
 # Handler to be called each time incoming data appear in the client socket.
 # In case there are only 0xFF and 0x00 bytes, the data frame was empty and 
 # the socket is being closed from the client side.
@@ -54,72 +53,77 @@ Client.prototype.dataHandler = (data) =>
 Client.prototype.getVersion = () ->
 	"75"
 	
+# ## Send
 #
 # Send the data to the client. The frame of data looks like.
 #
-#	0x00 ... data them selves in string format ... 0xFF
+# 	0x00 ... data them selves in string format ... 0xFF
 #
 Client.prototype.send = (data) ->
 	if @state is Client.STATUS_READY
 		try
-			@write("\x00", "binary")
-			@write(data, "utf8")
-			@write("\xff", "binary")
+			@write '\x00', 'binary'
+			@write data, 'utf8'
+			@write '\xff', 'binary'
 		catch e
 			sys.log e
 
-#
 # Write data using the specified encoding to the socket.
 #
 Client.prototype.write = (data, encoding) ->
 	unless @socket.writable
-		throw new Error "Client socket not writable!"
+		throw new Error 'Client socket not writable!'
 		
 	try
-		@socket.write(data, encoding)
+		@socket.write data, encoding
 	catch e 
 		throw new Error 'Client error writing to socket' + e
 	
-
-Client.prototype.handshake = (version, request, head) ->
-
-	location = @getLocation(request);
+#
+#
+#
+Client.prototype.handshake = () ->
+	res = null
+	location = @getLocation @request
 
 	if location
-		res = "HTTP/1.1 101 WebSocket Protocol Handshake\r\n"
-		+ "Upgrade: WebSocket\r\n"
-		+ "Connection: Upgrade\r\n"
-		+ "Sec-WebSocket-Origin: " + @getOrigin(request) + "\r\n"
-		+ "Sec-WebSocket-Location: " + location
+		res = 'HTTP/1.1 101 WebSocket Protocol Handshake\r\n'
+		+ 'Upgrade: WebSocket\r\n'
+		+ 'Connection: Upgrade\r\n'
+		+ 'Sec-WebSocket-Origin: ' + @getOrigin(@request) + '\r\n'
+		+ 'Sec-WebSocket-Location: ' + location
 
+		strkey1 = @request.headers['sec-websocket-key1']
+		strkey2 = @request.headers['sec-websocket-key2']
 
-		strkey1 = request.headers['sec-websocket-key1']
-		strkey2 = request.headers['sec-websocket-key2']
-
-		numkey1 = parseInt(strkey1.replace(/[^\d]/g, ""), 10)
-		numkey2 = parseInt(strkey2.replace(/[^\d]/g, ""), 10)
+		numkey1 = parseInt strkey1.replace(/[^\d]/g, ""), 10
+		numkey2 = parseInt strkey2.replace(/[^\d]/g, ""), 10
 
 		spaces1 = strkey1.replace(/[^\ ]/g, "").length
 		spaces2 = strkey2.replace(/[^\ ]/g, "").length
 
 		if spaces1 is 0 or spaces2 is 0 or numkey1 % spaces1 != 0 || numkey2 % spaces2 != 0
-			sys.log("Client: WebSocket contained an invalid key -- closing connection.")
+			sys.log '[client] WebSocket contained an invalid key!'
 		else
 			hash = Crypto.createHash("md5")
-			key1 = pack(numkey1 / spaces1)
-			key2 = pack(numkey2 / spaces2)
+			key1 = @pack numkey1 / spaces1
+			key2 = @pack numkey2 / spaces2
 
-			hash.update(key1)
-			hash.update(key2)
-			hash.update(head.toString("binary"))
+			hash.update key1
+			hash.update key2
+			hash.update @head.toString("binary")
 
-			res += "\r\n\r\n"
-			res += hash.digest("binary")
+			res += '\r\n\r\n'
+			res += hash.digest 'binary'
 
-			return res
-
-	return null
-
+	if res?
+		@write res, 'binary'
+		@state = Client.STATUS_READY
+		@emit 'ready', @
+		
+# ## Pack
+#
+#
 Client.prototype.pack = (num) ->
 	result = ''
 	result += String.fromCharCode(num >> 24 & 0xFF)
@@ -127,12 +131,20 @@ Client.prototype.pack = (num) ->
 	result += String.fromCharCode(num >> 8 & 0xFF)
 	result += String.fromCharCode(num &	0xFF)
 
+# ## getOrigin
+#
+# Parse the origin from the request object.
+#
 Client.prototype.getOrigin = (request) ->
 	origin = "*"
 
 	if origin is "*" or Array.isArray(origin)
 		origin = request.headers.origin
 
+# ## getLocation
+#
+# Parse the location from the requiest object.
+#
 Client.prototype.getLocation = (request) ->
 	if request.headers["host"] is undefined
 		sys.log "Missing host header"
@@ -155,23 +167,20 @@ Client.prototype.getLocation = (request) ->
 	location += request.url
 	return location
 
-
 # Client is in unknown state
-Client.STATUS_OPENING = 0;
+Client.STATUS_OPENING = 0
 
 # Client is doing initial handshake.
-Client.STATUS_HANDSHAKING = 1;
+Client.STATUS_HANDSHAKING = 1
 
 # Client is handshaked and ready for data processing.
-Client.STATUS_READY = 2;
+Client.STATUS_READY = 2
 
-# Client is closing and will be removed in short time. No more data
-# is processed.
-Client.STATUS_CLOSING = 3;
+# Client is closing and will be removed in short time. No more data is processed.
+Client.STATUS_CLOSING = 3
 
-# Client encountered an error and is no longer able to work
-# correctly.
-Client.STATUS_ERROR = 4;
+# Client encountered an error and is no longer able to work correctly.
+Client.STATUS_ERROR = 4
 
 # Client connection was rejected by server.
-Client.STATUS_REJECTED = 5;
+Client.STATUS_REJECTED = 5

@@ -10,8 +10,8 @@ Clients = module.exports = () ->
 sys.inherits(Clients, Events.EventEmitter)
 
 Clients.prototype.connect = (client) ->
-	
-	if(client.request.method is "GET" and ('upgrade' in client.request.headers and 'connection' in client.request.headers) and client.request.headers.upgrade.toLowerCase() is 'websocket' and client.request.headers.connection.toLowerCase() is 'upgrade')
+	if client.request.method is "GET" and client.request.headers.upgrade.toLowerCase() is 'websocket' and client.request.headers.connection.toLowerCase() is 'upgrade'
+		@list = {} unless @list?
 		@list[client.sid] = client
 		@count++
 

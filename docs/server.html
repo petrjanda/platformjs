@@ -1,0 +1,39 @@
+<!DOCTYPE html>  <html> <head>   <title>server.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="client.html">                 client.coffee               </a>                                           <a class="source" href="clients.html">                 clients.coffee               </a>                                           <a class="source" href="log.html">                 log.coffee               </a>                                           <a class="source" href="server.html">                 server.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               server.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">url 		= </span><span class="nx">require</span> <span class="s1">&#39;url&#39;</span> 
+<span class="nv">net 		= </span><span class="nx">require</span> <span class="s1">&#39;net&#39;</span> 	
+<span class="nv">sys 		= </span><span class="nx">require</span> <span class="s1">&#39;sys&#39;</span> 	
+<span class="nv">http 		= </span><span class="nx">require</span> <span class="s1">&#39;http&#39;</span> 
+<span class="nv">connect 	= </span><span class="nx">require</span> <span class="s1">&#39;connect&#39;</span> 
+<span class="nv">utils 		= </span><span class="nx">connect</span><span class="p">.</span><span class="nx">utils</span>
+	
+<span class="nv">Client		= </span><span class="nx">require</span> <span class="s1">&#39;./client&#39;</span>
+<span class="nv">Clients 	= </span><span class="nx">require</span> <span class="s1">&#39;./clients&#39;</span>
+<span class="nv">Log			= </span><span class="nx">require</span> <span class="s1">&#39;./log&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Global exceptions handling</h2>
+
+<p>All exception raised in the application, which are not caught by try blocks
+are being catched here. </p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">process</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;uncaughtException&#39;</span><span class="p">,</span> <span class="nf">(err) -&gt;</span>
+	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s1">&#39;Caught uncaughtException: &#39;</span> <span class="o">+</span> <span class="nx">err</span><span class="p">.</span><span class="nx">stack</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h1>PlatformJS Server</h1>
+
+<p>PlatformJS server for real-time websocket protocol based communication. 
+Its designed to work in both cases as standalone server or to be attached
+to other already existing HTTP server based on http.createServer() like
+express.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Server = module.exports = </span><span class="nf">() -&gt;</span>
+	<span class="vi">@clients = </span><span class="k">new</span> <span class="nx">Clients</span><span class="p">()</span>
+	<span class="vi">@server = </span><span class="kc">null</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h2>Listen</h2>
+
+<p>Function to start server listening for new ws:// protocol connections. As soon as
+server 'upgrade' event is emited client object is created and stored in internal 
+server list. Regular requests over http:// family protocols are not affected and
+handled by HTTP server as usual without PlatformJS server.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Server.prototype.listen = </span><span class="nf">(server) -&gt;</span>
+	<span class="vi">@server = </span><span class="nx">server</span>
+
+	<span class="nx">server</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;upgrade&#39;</span><span class="p">,</span> <span class="nf">(request, socket, head) -&gt;</span>
+		<span class="nx">self</span><span class="p">.</span><span class="nx">clients</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="k">new</span> <span class="nx">Client</span><span class="p">(</span><span class="nx">utils</span><span class="p">.</span><span class="nx">uid</span><span class="p">(),</span> <span class="nx">request</span><span class="p">,</span> <span class="nx">socket</span><span class="p">,</span> <span class="nx">head</span><span class="p">))</span>
+	
+	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Log</span><span class="p">.</span><span class="nx">greenify</span><span class="p">(</span><span class="s1">&#39;[platformjs]&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Started&#39;</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h2>Close</h2>
+
+<p>Close the PlatformJS server by disconnecting all clients and removing the 'upgrade'
+listener. Webserver itself is not affected at all and continue to work.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Server.prototype.close = </span><span class="nf">() -&gt;</span>
+	<span class="nx">@channels</span><span class="p">.</span><span class="nx">destroyAll</span><span class="p">()</span>
+	<span class="nx">@server</span><span class="p">.</span><span class="nx">removeAllListeners</span> <span class="s1">&#39;upgrade&#39;</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
