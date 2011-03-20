@@ -19,10 +19,10 @@ process.on 'uncaughtException', (err) ->
 
 # # PlatformJS Server
 #
-# PlatformJS is HTTP server module for real-time communication using 
-# the WebSocket protocol. Its properly designed to be able to cooperate
-# on top of the regular HTTP server instance based on express, connect 
-# or any other standard HTTP node.js server.
+# PlatformJS server for real-time websocket protocol based communication. 
+# Its designed to work in both cases as standalone server or to be attached
+# to other already existing HTTP server based on http.createServer() like
+# express.
 #
 Server = module.exports = () ->
 	@clients = new Clients()
@@ -30,13 +30,10 @@ Server = module.exports = () ->
 
 # # Listen
 #
-# Start listening for websocket connections. The server is started to work
-# on top of the regular HTTP server. Only ws:// requrests are handled here, rest of
-# them goes through.
-#
-# If the new upgrade event on the server instance is emited, we detect the connection 
-# coming, generate the unique session ID and bypass all request data so client can 
-# be handshaked and then connected to the server.
+# Function to start server listening for new ws:// protocol connections. As soon as
+# server 'upgrade' event is emited client object is created and stored in internal 
+# server list. Regular requests over http:// family protocols are not affected and
+# handled by HTTP server as usual without PlatformJS server.
 #
 Server.prototype.listen = (server) ->
 	@server = server
@@ -48,9 +45,8 @@ Server.prototype.listen = (server) ->
 
 # # Close
 #
-# Close method is responsible to shut down the server and detatch it from the webserver.
-# It closes all the connection with clients actually connected and remove the event listener
-# so the instance no longer retrieve any connect calls.
+# Close the PlatformJS server by disconnecting all clients and removing the 'upgrade'
+# listener. Webserver itself is not affected at all and continue to work.
 #
 Server.prototype.close = () ->
 	@channels.destroyAll()
