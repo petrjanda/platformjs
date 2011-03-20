@@ -7,6 +7,7 @@ utils 		= connect.utils
 	
 Client		= require './client'
 Clients 	= require './clients'
+Log			= require './log'
 
 # ## Global exceptions handling
 # 
@@ -43,6 +44,7 @@ Server.prototype.listen = (server) ->
 	server.on 'upgrade', (request, socket, head) ->
 		self.clients.connect(new Client(utils.uid(), request, socket, head))
 	
+	console.log(Log.greenify('[platformjs]') + ' Started')
 
 # # Close
 #

@@ -19,5 +19,3 @@ server.listen(8124, "127.0.0.1");
 // Create platform.js instance
 var platformjs = new Server()
 platformjs.listen(server);
-
-sys.puts('[platformjs] Started');
