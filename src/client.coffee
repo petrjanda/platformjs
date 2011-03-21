@@ -87,11 +87,7 @@ Client.prototype.handshake = () ->
 	location = @getLocation @request
 
 	if location
-		res = 'HTTP/1.1 101 WebSocket Protocol Handshake\r\n'
-		+ 'Upgrade: WebSocket\r\n'
-		+ 'Connection: Upgrade\r\n'
-		+ 'Sec-WebSocket-Origin: ' + @getOrigin(@request) + '\r\n'
-		+ 'Sec-WebSocket-Location: ' + location
+		res = 'HTTP/1.1 101 WebSocket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\nSec-WebSocket-Origin: ' + @getOrigin(@request) + '\r\nSec-WebSocket-Location: ' + location
 
 		strkey1 = @request.headers['sec-websocket-key1']
 		strkey2 = @request.headers['sec-websocket-key2']
@@ -115,6 +111,8 @@ Client.prototype.handshake = () ->
 
 			res += '\r\n\r\n'
 			res += hash.digest 'binary'
+
+	console.log(res)
 
 	if res?
 		@write res, 'binary'
@@ -165,6 +163,7 @@ Client.prototype.getLocation = (request) ->
 		location += ":" + port
 	
 	location += request.url
+	location = 'ws://localhost:8000/'
 	return location
 
 # Client is in unknown state

@@ -2,6 +2,7 @@ url			= require 'url'
 sys			= require 'sys'
 Events		= require 'events' 
 Client		= require 'client'
+Log			= require 'log'
 
 Clients = module.exports = () ->
 	process.EventEmitter.call(this)
@@ -19,6 +20,7 @@ Clients.prototype.connect = (client) ->
 			@emit 'data', client, data
 		
 		client.addListener 'ready', (client) =>
+			console.log Log.greenify('[clients]') + ' new connection'
 			@emit 'ready', client
 		
 		client.handshake()
