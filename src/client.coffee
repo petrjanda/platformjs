@@ -50,9 +50,6 @@ Client.prototype.dataHandler = (data) =>
 	else
 		@emit('data', @, data.substring(1, data.length - 1))
 
-Client.prototype.getVersion = () ->
-	"75"
-	
 # ## Send
 #
 # Send the data to the client. The frame of data looks like.
@@ -128,6 +125,9 @@ Client.prototype.pack = (num) ->
 	result += String.fromCharCode(num >> 16 & 0xFF)
 	result += String.fromCharCode(num >> 8 & 0xFF)
 	result += String.fromCharCode(num &	0xFF)
+
+Client.prototype.getVersion = () ->
+	"75"
 
 # ## getOrigin
 #

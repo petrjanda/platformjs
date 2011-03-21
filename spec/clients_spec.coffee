@@ -1,9 +1,6 @@
-path	= require 'path'
-sys		= require 'sys'
+require './spec_helper'
 
-require.paths.unshift(require('path').resolve(__dirname, '../lib/'));
-
-Clients = require '../src/clients'
+Clients = require 'clients'
 
 describe "Clients", ->
 	beforeEach ->

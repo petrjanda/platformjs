@@ -5,9 +5,9 @@ http 		= require 'http'
 connect 	= require 'connect' 
 utils 		= connect.utils
 	
-Client		= require './client'
-Clients 	= require './clients'
-Log			= require './log'
+Client		= require 'client'
+Clients 	= require 'clients'
+Log			= require 'log'
 
 # ## Global exceptions handling
 # 

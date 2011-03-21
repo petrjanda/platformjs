@@ -1,12 +1,8 @@
-path	= require 'path'
+require './spec_helper'
+
 http	= require 'http'
-tobi	= require 'tobi'
-sys 	= require 'sys'
+Server 	= require 'server'
 WebSocket = require('websocket-client').WebSocket
-
-require.paths.unshift(require('path').resolve(__dirname, '../lib/'));
-
-Server 	= require '../src/server'
 
 describe "Server", ->
 	beforeEach ->

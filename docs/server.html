@@ -26,14 +26,15 @@ server list. Regular requests over http:// family protocols are not affected and
 handled by HTTP server as usual without PlatformJS server.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Server.prototype.listen = </span><span class="nf">(server) -&gt;</span>
 	<span class="vi">@server = </span><span class="nx">server</span>
 
-	<span class="nx">server</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;upgrade&#39;</span><span class="p">,</span> <span class="nf">(request, socket, head) -&gt;</span>
-		<span class="nx">self</span><span class="p">.</span><span class="nx">clients</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="k">new</span> <span class="nx">Client</span><span class="p">(</span><span class="nx">utils</span><span class="p">.</span><span class="nx">uid</span><span class="p">(),</span> <span class="nx">request</span><span class="p">,</span> <span class="nx">socket</span><span class="p">,</span> <span class="nx">head</span><span class="p">))</span>
+	<span class="nx">server</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;upgrade&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">request</span><span class="p">,</span> <span class="nx">socket</span><span class="p">,</span> <span class="nx">head</span><span class="p">)</span> <span class="o">=&gt;</span>
+		<span class="nx">@clients</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="k">new</span> <span class="nx">Client</span><span class="p">(</span><span class="nx">utils</span><span class="p">.</span><span class="nx">uid</span><span class="p">(),</span> <span class="nx">request</span><span class="p">,</span> <span class="nx">socket</span><span class="p">,</span> <span class="nx">head</span><span class="p">))</span>
 	
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Log</span><span class="p">.</span><span class="nx">greenify</span><span class="p">(</span><span class="s1">&#39;[platformjs]&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Started&#39;</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h2>Close</h2>
 
 <p>Close the PlatformJS server by disconnecting all clients and removing the 'upgrade'
 listener. Webserver itself is not affected at all and continue to work.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Server.prototype.close = </span><span class="nf">() -&gt;</span>
-	<span class="nx">@channels</span><span class="p">.</span><span class="nx">destroyAll</span><span class="p">()</span>
 	<span class="nx">@server</span><span class="p">.</span><span class="nx">removeAllListeners</span> <span class="s1">&#39;upgrade&#39;</span>
+	
+	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Log</span><span class="p">.</span><span class="nx">greenify</span><span class="p">(</span><span class="s1">&#39;[platformjs]&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Closed&#39;</span><span class="p">)</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
