@@ -13,6 +13,11 @@ sys.inherits(Clients, Events.EventEmitter)
 Clients.prototype.connect = (client) ->
 	if client.request.method is "GET" and client.request.headers.upgrade.toLowerCase() is 'websocket' and client.request.headers.connection.toLowerCase() is 'upgrade'
 		@list = {} unless @list?
+		
+		# Dont add new client if its already connected.
+		if @list[client.sid]?
+			return
+		
 		@list[client.sid] = client
 		@count++
 
@@ -34,11 +39,10 @@ Clients.prototype.disconnect = (client) ->
 	@count--
 
 Clients.prototype.disconnectAll = () ->
-	@clients[sid].close() for sid of self.clients
-	delete self.clients[sid] for sid of self.clients
+	(@list[sid].close()
+	delete @list[sid]) for sid of @list
 	@count = 0
 
 Clients.prototype.broadcast = (data) ->
-	
 	(if @clients[sid].state == Client.STATUS_READY
 		@lients[sid].send(data)) for sid of self.clients

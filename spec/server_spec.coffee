@@ -29,6 +29,7 @@ describe "Server", ->
 	describe "connection", ->
 		it "should be done with ws:// protocol", ->
 			spyOn @server.clients, 'connect'
+
 			runs () =>
 				@ws = new WebSocket 'ws://localhost:1234'
 			
