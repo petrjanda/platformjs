@@ -26,9 +26,9 @@ describe "Server", ->
 	it "should have client list", ->
 		expect(@server.clients).not.toBeUndefined()
 		
-	describe "server", ->
-		it "should be connection with ws:// protocol", ->
-			spyOn(@server.clients, 'connect')
+	describe "connection", ->
+		it "should be done with ws:// protocol", ->
+			spyOn @server.clients, 'connect'
 			runs () =>
 				@ws = new WebSocket 'ws://localhost:1234'
 			
@@ -36,3 +36,12 @@ describe "Server", ->
 
 			runs () =>
 				expect(@server.clients.connect).toHaveBeenCalled()
+	
+	describe "close", ->
+		it "should remove upgrade event listener", ->
+			spyOn @http, 'removeAllListeners'
+			
+			@server.close()
+			expect(@http.removeAllListeners).toHaveBeenCalledWith('upgrade')
+	  	
+	
