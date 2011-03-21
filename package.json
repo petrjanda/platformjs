@@ -7,7 +7,7 @@
   "engines": { "node": "0.4.2" },
   "directories": { "lib": "./lib", "bin": "./bin" },
   "bin": { "server": "bin/platformjs"},
-  "dependencies":{
+  "devDependencies":{
     "jasmine-node": ">=1.0.0rc1",
 	"coffee-script": ">=1.0.1"
   },
