@@ -49,5 +49,6 @@ Server.prototype.listen = (server) ->
 # listener. Webserver itself is not affected at all and continue to work.
 #
 Server.prototype.close = () ->
-	@channels.destroyAll()
 	@server.removeAllListeners 'upgrade'
+	
+	console.log(Log.greenify('[platformjs]') + ' Closed')

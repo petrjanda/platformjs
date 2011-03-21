@@ -8,9 +8,6 @@ require.paths.unshift(require('path').resolve(__dirname, '../lib/'));
 
 Server 	= require '../src/server'
 
-
-
-
 describe "Server", ->
 	beforeEach ->
 		@http = http.createServer()
@@ -20,6 +17,7 @@ describe "Server", ->
 		
 	afterEach ->
 		@http.close()
+		@server.close()
 	
 		
 	it "should have server", ->
@@ -28,12 +26,13 @@ describe "Server", ->
 	it "should have client list", ->
 		expect(@server.clients).not.toBeUndefined()
 		
-	describe "connection", ->
-		it "should be accepted for ws:// protocol", ->
-  			ws = new WebSocket('ws://localhost:1234', 'borf');
-			console.log(WebSocket)
-			#ws.on 'data', (buf) ->
-			#	console.log 'Got data: ' + buf
+	describe "server", ->
+		it "should be connection with ws:// protocol", ->
+			spyOn(@server.clients, 'connect')
+			runs () =>
+				@ws = new WebSocket 'ws://localhost:1234'
+			
+			waits 1000
 
-			#ws.onmessage = (m) ->
-			#    console.log 'Got message: ' + m
+			runs () =>
+				expect(@server.clients.connect).toHaveBeenCalled()
