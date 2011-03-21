@@ -8,6 +8,8 @@ Clients = require '../src/clients'
 describe "Clients", ->
 	beforeEach ->
 		@clients = new Clients()
+		
+		# Mock the client
 		@client =
 			request:
 				method: 'GET'
@@ -23,21 +25,31 @@ describe "Clients", ->
 			handshake: () ->
 
 	describe "connect", ->
-		describe "with invalid request headers", ->
-				
 		describe "with valid request headers", ->
 			it "should start handshake", ->
 				spyOn @client, 'handshake'
 				@clients.connect(@client)
 				expect(@client.handshake).toHaveBeenCalled()
 			  
+			it "should add listers to client", ->
+				s = spyOn @client, 'addListener'
+				@clients.connect(@client)
+				expect(@client.addListener).toHaveBeenCalled()
+				expect(s.callCount).toBe(2)
+			
 			it "should not call close ", ->
 				spyOn @client, 'close'
 				console.log sys.inspect(@client.request.method)
 				@clients.connect(@client)
-				expect(@client.close).not.toHaveBeenCalled()			
-				
-			
+				expect(@client.close).not.toHaveBeenCalled()
+
+		describe "with invalid request method", ->
+			it "should call close", ->
+				@client.request.method = 'POST'
+				spyOn @client, 'close'
+				@clients.connect(@client)
+				expect(@client.close).toHaveBeenCalled()
+
 		
 
 	describe "disconnect", ->
