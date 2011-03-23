@@ -1,6 +1,7 @@
 require './spec_helper'
 
 Clients = require 'clients'
+Client 	= require 'client'
 
 describe "Clients", ->
 	beforeEach ->
@@ -9,6 +10,7 @@ describe "Clients", ->
 		# Mock the client
 		@client =
 			sid: 123
+			state: Client.STATUS_READY
 			request:
 				method: 'GET'
 				headers: 
@@ -21,6 +23,7 @@ describe "Clients", ->
 			close: () ->
 			addListener: () ->
 			handshake: () ->
+			send: () ->
 				
 	describe "client count", ->
 		it "should be 1", ->
@@ -102,4 +105,12 @@ describe "Clients", ->
 		
 		
 	describe "broadcast", ->
-	  
+		beforeEach ->
+			@clients.connect(@client)
+
+		it "should call send for all clients", ->
+			spyOn @client, 'send'
+			@clients.broadcast("message")
+			expect(@client.send).toHaveBeenCalled()
+		  
+		

@@ -50,5 +50,4 @@ Server.prototype.listen = (server) ->
 #
 Server.prototype.close = () ->
 	@server.removeAllListeners 'upgrade'
-	
 	console.log(Log.greenify('[platformjs]') + ' Closed')

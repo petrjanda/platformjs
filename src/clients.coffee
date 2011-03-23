@@ -44,5 +44,5 @@ Clients.prototype.disconnectAll = () ->
 	@count = 0
 
 Clients.prototype.broadcast = (data) ->
-	(if @clients[sid].state == Client.STATUS_READY
-		@lients[sid].send(data)) for sid of self.clients
+	(if @list[sid].state == Client.STATUS_READY
+		@list[sid].send(data)) for sid of @list
