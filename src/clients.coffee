@@ -43,6 +43,7 @@ Clients.prototype.disconnectAll = () ->
 	delete @list[sid]) for sid of @list
 	@count = 0
 
+# ## Broadcast
 Clients.prototype.broadcast = (data) ->
 	(if @list[sid].state == Client.STATUS_READY
 		@list[sid].send(data)) for sid of @list

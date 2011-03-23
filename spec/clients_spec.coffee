@@ -112,5 +112,16 @@ describe "Clients", ->
 			spyOn @client, 'send'
 			@clients.broadcast("message")
 			expect(@client.send).toHaveBeenCalled()
-		  
+			
+		it "should not call send in case client is not ready", ->
+			@client.state = Client.STATUS_OPENING
+			spyOn @client, 'send'
+			@clients.broadcast("message")
+			expect(@client.send).not.toHaveBeenCalled()
+			
+		it "should not call send in case client is closing", ->
+			@client.state = Client.STATUS_CLOSING
+			spyOn @client, 'send'
+			@clients.broadcast("message")
+			expect(@client.send).not.toHaveBeenCalled()
 		
