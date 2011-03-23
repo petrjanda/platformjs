@@ -5,9 +5,9 @@
 <span class="nv">connect 	= </span><span class="nx">require</span> <span class="s1">&#39;connect&#39;</span> 
 <span class="nv">utils 		= </span><span class="nx">connect</span><span class="p">.</span><span class="nx">utils</span>
 	
-<span class="nv">Client		= </span><span class="nx">require</span> <span class="s1">&#39;./client&#39;</span>
-<span class="nv">Clients 	= </span><span class="nx">require</span> <span class="s1">&#39;./clients&#39;</span>
-<span class="nv">Log			= </span><span class="nx">require</span> <span class="s1">&#39;./log&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Global exceptions handling</h2>
+<span class="nv">Client		= </span><span class="nx">require</span> <span class="s1">&#39;client&#39;</span>
+<span class="nv">Clients 	= </span><span class="nx">require</span> <span class="s1">&#39;clients&#39;</span>
+<span class="nv">Log			= </span><span class="nx">require</span> <span class="s1">&#39;log&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Global exceptions handling</h2>
 
 <p>All exception raised in the application, which are not caught by try blocks
 are being catched here. </p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">process</span><span class="p">.</span><span class="kc">on</span> <span class="s1">&#39;uncaughtException&#39;</span><span class="p">,</span> <span class="nf">(err) -&gt;</span>
@@ -34,7 +34,6 @@ handled by HTTP server as usual without PlatformJS server.</p>             </td>
 <p>Close the PlatformJS server by disconnecting all clients and removing the 'upgrade'
 listener. Webserver itself is not affected at all and continue to work.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">Server.prototype.close = </span><span class="nf">() -&gt;</span>
 	<span class="nx">@server</span><span class="p">.</span><span class="nx">removeAllListeners</span> <span class="s1">&#39;upgrade&#39;</span>
-	
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Log</span><span class="p">.</span><span class="nx">greenify</span><span class="p">(</span><span class="s1">&#39;[platformjs]&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Closed&#39;</span><span class="p">)</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
