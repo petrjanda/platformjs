@@ -1,11 +1,3 @@
-sys			= require 'sys'
-Events		= require 'events'
-url			= require 'url'
-Crypto		= require 'crypto'
-Buffer		= require('buffer').Buffer
-
-# # Client
-#
 # Client represents one connection to the server. Its created in case new
 # connection is coming to server, handshaked and stored in server list in
 # case the handshake result is ok.
@@ -13,15 +5,19 @@ Buffer		= require('buffer').Buffer
 # It has ability to send and retrieve the data to resp. from the client machine.
 # It uses client-server websocket protocol version draft75 or draft75.
 #
+sys			= require 'sys'
+Events		= require 'events'
+url			= require 'url'
+Crypto		= require 'crypto'
+Buffer		= require('buffer').Buffer
+
 Client = module.exports = (sid, request, socket, head) ->
 	process.EventEmitter.call(this)
 	
 	@request = request
 	@socket = socket
 	@head = head
-	
 	@sid = sid
-
 	@state = Client.STATUS_OPENING
 	
 	# Start listening for client socket data.
@@ -54,7 +50,7 @@ Client.prototype.dataHandler = (data) =>
 #
 # Send the data to the client. The frame of data looks like.
 #
-# 	0x00 ... data them selves in string format ... 0xFF
+# 	0x00 ... UTF-8 encoded string ... 0xFF
 #
 Client.prototype.send = (data) ->
 	if @state is Client.STATUS_READY
@@ -63,7 +59,7 @@ Client.prototype.send = (data) ->
 			@write data, 'utf8'
 			@write '\xff', 'binary'
 		catch e
-			sys.log e
+			console.log e
 
 # Write data using the specified encoding to the socket.
 #

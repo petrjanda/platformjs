@@ -25,7 +25,9 @@ sys.inherits(Clients, Events.EventEmitter)
 # If there is anything wrong with request headers the client is closed.
 #
 Clients.prototype.connect = (client) ->
-	if client.request.method is "GET" and client.request.headers.upgrade.toLowerCase() is 'websocket' and client.request.headers.connection.toLowerCase() is 'upgrade'
+	if client.request.method is "GET" and 
+	client.request.headers.upgrade.toLowerCase() is 'websocket' and 
+	client.request.headers.connection.toLowerCase() is 'upgrade'
 		@list = {} unless @list?
 		
 		# Dont add new client if its already connected.
