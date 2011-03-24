@@ -1,3 +1,11 @@
+sys			= require 'sys'
+Events		= require 'events'
+url			= require 'url'
+Crypto		= require 'crypto'
+Buffer		= require('buffer').Buffer
+
+# # Client
+#
 # Client represents one connection to the server. Its created in case new
 # connection is coming to server, handshaked and stored in server list in
 # case the handshake result is ok.
@@ -5,19 +13,15 @@
 # It has ability to send and retrieve the data to resp. from the client machine.
 # It uses client-server websocket protocol version draft75 or draft75.
 #
-sys			= require 'sys'
-Events		= require 'events'
-url			= require 'url'
-Crypto		= require 'crypto'
-Buffer		= require('buffer').Buffer
-
 Client = module.exports = (sid, request, socket, head) ->
 	process.EventEmitter.call(this)
 	
 	@request = request
 	@socket = socket
 	@head = head
+	
 	@sid = sid
+
 	@state = Client.STATUS_OPENING
 	
 	# Start listening for client socket data.
@@ -31,6 +35,9 @@ Client = module.exports = (sid, request, socket, head) ->
 			@firstFrame = head.slice(8, head.length)
 		else
 			@reject("Missing key3")
+			
+	console.log @request.headers
+	console.log @head
 	
 sys.inherits(Client, Events.EventEmitter)	
 
@@ -50,7 +57,7 @@ Client.prototype.dataHandler = (data) =>
 #
 # Send the data to the client. The frame of data looks like.
 #
-# 	0x00 ... UTF-8 encoded string ... 0xFF
+# 	0x00 ... data them selves in string format ... 0xFF
 #
 Client.prototype.send = (data) ->
 	if @state is Client.STATUS_READY
@@ -59,7 +66,7 @@ Client.prototype.send = (data) ->
 			@write data, 'utf8'
 			@write '\xff', 'binary'
 		catch e
-			console.log e
+			sys.log e
 
 # Write data using the specified encoding to the socket.
 #
@@ -72,8 +79,26 @@ Client.prototype.write = (data, encoding) ->
 	catch e 
 		throw new Error 'Client error writing to socket' + e
 	
+# The WebSocket client's handshake appears to HTTP servers to be a regular GET request with an Upgrade offer:
 #
+# 	GET / HTTP/1.1
+# 	Upgrade: WebSocket
+# 	Connection: Upgrade
 #
+# Fields in the handshake are sent by the client in a random order; the 
+# order is not meaningful.
+#
+# Additional fields are used to select options in the WebSocket protocol.
+# The only options available in this version are the subprotocol selector, 
+# |Sec-WebSocket-Protocol|, and |Cookie|, which can used for sending cookies 
+# to the server (e.g. as an authentication mechanism).  The |Sec-WebSocket-Protocol| 
+# field takes an arbitrary string:
+#
+# 	Sec-WebSocket-Protocol: chat
+#
+# This field indicates the subprotocol (the application-level protocol layered over 
+# the WebSocket protocol) that the client intends to use. The server echoes this 
+# field in its handshake to indicate that it supports that subprotocol.
 #
 Client.prototype.handshake = () ->
 	res = null
@@ -82,6 +107,12 @@ Client.prototype.handshake = () ->
 	if location
 		res = 'HTTP/1.1 101 WebSocket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\nSec-WebSocket-Origin: ' + @getOrigin(@request) + '\r\nSec-WebSocket-Location: ' + location
 
+		# For each of these fields, the server has to take the digits from the
+		# value to obtain a number (in this case 1868545188 and 1733470270
+		# respectively), then divide that number by the number of spaces
+		# characters in the value (in this case 12 and 10) to obtain a 32-bit
+		# number (155712099 and 173347027).  These two resulting numbers are
+		# then used in the server handshake.
 		strkey1 = @request.headers['sec-websocket-key1']
 		strkey2 = @request.headers['sec-websocket-key2']
 
@@ -98,6 +129,12 @@ Client.prototype.handshake = () ->
 			key1 = @pack numkey1 / spaces1
 			key2 = @pack numkey2 / spaces2
 
+			# The concatenation of the number obtained from processing the |Sec-
+			# WebSocket-Key1| field, expressed as a big-endian 32 bit number, the
+			# number obtained from processing the |Sec-WebSocket-Key2| field, again
+			# expressed as a big-endian 32 bit number, and finally the eight bytes
+			# at the end of the handshake, form a 128 bit string whose MD5 sum is
+			# then used by the server to prove that it read the handshake.
 			hash.update key1
 			hash.update key2
 			hash.update @head.toString("binary")
@@ -105,7 +142,7 @@ Client.prototype.handshake = () ->
 			res += '\r\n\r\n'
 			res += hash.digest 'binary'
 
-	console.log(res)
+	console.log sys.inspect res
 
 	if res?
 		@write res, 'binary'
@@ -123,7 +160,7 @@ Client.prototype.pack = (num) ->
 	result += String.fromCharCode(num &	0xFF)
 
 Client.prototype.getVersion = () ->
-	"75"
+	"76"
 
 # ## getOrigin
 #

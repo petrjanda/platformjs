@@ -3,11 +3,19 @@ require './spec_helper'
 Client	= require 'client'
 sys		= require 'sys'
 net		= require 'net'
+http	= require 'http'
+buffer	= require 'buffer'
 
 describe "Client", ->
 	beforeEach ->
 		@socket = new net.Socket({fd: 9, type: 'tcp4', allowHalfOpen: true})
-		@client = new Client(null, null, @socket)
+		@request = 
+			headers:
+				'sec-websocket-key1': "18x 6]8vM;54 *(5:  {   U1]8  z [  8"
+				'sec-websocket-key2': "1_ tx7X d  <  nw  334J702) 7]o}` 0"
+		@head = new buffer.Buffer(8)
+			
+		@client = new Client("", @request, @socket, @head)
 	
 	it "should be valid", ->
 		expect(@client).toBeDefined()
@@ -49,3 +57,14 @@ describe "Client", ->
 		xit "should call", ->
 			spyOn(@client.socket, 'write').andThrow(new Error())
 			expect(@client.write).toThrow(new Error("Client error writing to socket"))
+			
+	describe "handshake", ->
+		it "should return valid handshake response", ->
+			spyOn(@client, 'getLocation').andReturn('ws://localhost:8000/')
+			spyOn(@client, 'write')
+			@client.handshake()
+			expect(@client.write).toHaveBeenCalled()
+			# With("HTTP/1.1 101 WebSocket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\nSec-WebSocket-Origin: null\r\nSec-WebSocket-Location: ws://localhost:8000/\r\n\r\np$|º¾uhåÈn") # fQJ,fN/4F4!~K~MH
+			
+			
+			
