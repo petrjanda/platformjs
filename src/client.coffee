@@ -13,6 +13,9 @@ Buffer		= require('buffer').Buffer
 # It has ability to send and retrieve the data to resp. from the client machine.
 # It uses client-server websocket protocol version draft75 or draft75.
 #
+# http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
+# http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-76
+#
 Client = module.exports = (sid, request, socket, head) ->
 	process.EventEmitter.call(this)
 	
