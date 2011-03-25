@@ -108,7 +108,7 @@ Client.prototype.handshake = () ->
 	location = @getLocation @request
 
 	if location
-		res = 'HTTP/1.1 101 WebSocket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\nSec-WebSocket-Origin: ' + @getOrigin(@request) + '\r\nSec-WebSocket-Location: ' + location
+		res = 'HTTP/1.1 101 WebSocket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\nSec-WebSocket-Origin: ' + @getOrigin() + '\r\nSec-WebSocket-Location: ' + location
 
 		# For each of these fields, the server has to take the digits from the
 		# value to obtain a number (in this case 1868545188 and 1733470270
@@ -169,11 +169,8 @@ Client.prototype.getVersion = () ->
 #
 # Parse the origin from the request object.
 #
-Client.prototype.getOrigin = (request) ->
-	origin = "*"
-
-	if origin is "*" or Array.isArray(origin)
-		origin = request.headers.origin
+Client.prototype.getOrigin = () ->
+	origin = @request.headers.origin
 
 # ## getLocation
 #

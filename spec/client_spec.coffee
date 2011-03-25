@@ -13,6 +13,7 @@ describe "Client", ->
 			headers:
 				'sec-websocket-key1': "18x 6]8vM;54 *(5:  {   U1]8  z [  8"
 				'sec-websocket-key2': "1_ tx7X d  <  nw  334J702) 7]o}` 0"
+				origin: "localhost"
 		@head = new buffer.Buffer(8)
 			
 		@client = new Client("", @request, @socket, @head)
@@ -66,5 +67,16 @@ describe "Client", ->
 			expect(@client.write).toHaveBeenCalled()
 			# With("HTTP/1.1 101 WebSocket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\nSec-WebSocket-Origin: null\r\nSec-WebSocket-Location: ws://localhost:8000/\r\n\r\np$|º¾uhåÈn") # fQJ,fN/4F4!~K~MH
 			
+			
+	describe "getVersion", ->
+		it "should return 76", ->
+			expect(@client.getVersion()).toEqual("76")
+			
+	describe "getOrigin", ->
+		it "should return request origin", ->
+			expect(@client.getOrigin()).toEqual("localhost")
+			
+	describe "getLocation", ->
+		it "should return request location", ->
 			
 			
