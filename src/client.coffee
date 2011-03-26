@@ -179,26 +179,33 @@ Client.prototype.getOrigin = () ->
 # Parse the location from the requiest object.
 #
 Client.prototype.getLocation = (request) ->
-	if request.headers["host"] is undefined
+	unless request.headers.host?
 		sys.log "Missing host header"
 		return
 
 	location = ""
 	secure = request.socket.secure
 	host = request.headers.host.split(":")
-	port = secure ? 443 : 80
 	
-	if host[1] isnt undefined
+	if secure
+		port = 443
+		protocol = "wss://"
+	else
+		port = 80
+		protocol = "ws://"
+	
+	if host[1]?
 		port = host[1]
 
-	location += secure ? "wss://" : "ws://"
+	location += protocol
 	location += host[0]
 	
 	if not secure? and port isnt 80 or secure? and port isnt 443
 		location += ":" + port
 	
-	location += request.url
-	location = 'ws://localhost:8000/'
+	if request.url?
+		location += request.url
+		
 	return location
 
 # Client is in unknown state

@@ -16,6 +16,8 @@ describe "Client", ->
 				'sec-websocket-key1': ",  3524 2h  70M U|580   . t?[T"
 				'sec-websocket-key2': "g299681m859\\  8"
 				origin: "localhost"
+				host: "localhost"
+			socket: @socket
 		@head = new buffer.Buffer(['\x00','\x00','\x00','\x00','\x00','\x00','\x00','\x00'])
 			
 		@client = new Client("", @request, @socket, @head)
@@ -95,7 +97,7 @@ describe "Client", ->
 				@ws = new WebSocket 'ws://localhost:1234'
 				expect(@ws.readyState).toEqual 0
 		
-			waits 1000
+			waits 1500
 
 			runs () =>
 				expect(@ws.readyState).toEqual 1
@@ -109,6 +111,28 @@ describe "Client", ->
 			expect(@client.getOrigin()).toEqual("localhost")
 			
 	describe "getLocation", ->
-		it "should return request location", ->
+		describe "with wrong request headers", ->
+			beforeEach ->
+				@client.request.headers.host = null
 			
+			it "should return undefined", ->
+				console.log @client.request.headers.host?
+				expect(@client.getLocation(@client.request)).toEqual(undefined)
+		
+		describe "with valid headers", ->
+			it "should return valid location", ->
+				expect(@client.getLocation(@client.request)).toEqual('ws://localhost')
+
+		describe "with valid headers and port", ->
+			beforeEach ->
+				@client.request.headers.host = "localhost:8000"
 			
+			it "should return valid location with port", ->
+				expect(@client.getLocation(@client.request)).toEqual('ws://localhost:8000')
+			
+		describe "with valid headers and secure socket", ->
+			beforeEach ->
+				@client.request.socket.secure = true
+
+			it "should return location starting with wss://", ->
+				expect(@client.getLocation(@client.request)).toEqual('wss://localhost')
