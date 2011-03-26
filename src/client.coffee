@@ -39,8 +39,7 @@ Client = module.exports = (sid, request, socket, head) ->
 		else
 			@reject("Missing key3")
 			
-	console.log @request.headers
-	console.log @head
+	return
 	
 sys.inherits(Client, Events.EventEmitter)	
 
@@ -86,7 +85,8 @@ Client.prototype.close = () ->
 	if @state is Client.STATUS_READY
 		@write '\xff\x00', 'binary'
 	
-# The WebSocket client's handshake appears to HTTP servers to be a regular GET request with an Upgrade offer:
+# The WebSocket client's handshake appears to HTTP servers to be a regular GET 
+# request with an Upgrade offer:
 #
 # 	GET / HTTP/1.1
 # 	Upgrade: WebSocket
@@ -135,7 +135,7 @@ Client.prototype.handshake = () ->
 			hash = Crypto.createHash("md5")
 			key1 = @pack numkey1 / spaces1
 			key2 = @pack numkey2 / spaces2
-
+			
 			# The concatenation of the number obtained from processing the |Sec-
 			# WebSocket-Key1| field, expressed as a big-endian 32 bit number, the
 			# number obtained from processing the |Sec-WebSocket-Key2| field, again
@@ -148,8 +148,6 @@ Client.prototype.handshake = () ->
 
 			res += '\r\n\r\n'
 			res += hash.digest 'binary'
-
-	console.log sys.inspect res
 
 	if res?
 		@write res, 'binary'

@@ -3,20 +3,23 @@ require './spec_helper'
 Client	= require 'client'
 sys		= require 'sys'
 net		= require 'net'
-http	= require 'http'
 buffer	= require 'buffer'
+http	= require 'http'
+Server 	= require 'server'
+WebSocket = require('websocket-client').WebSocket
 
 describe "Client", ->
 	beforeEach ->
 		@socket = new net.Socket({fd: 9, type: 'tcp4', allowHalfOpen: true})
 		@request = 
 			headers:
-				'sec-websocket-key1': "18x 6]8vM;54 *(5:  {   U1]8  z [  8"
-				'sec-websocket-key2': "1_ tx7X d  <  nw  334J702) 7]o}` 0"
+				'sec-websocket-key1': ",  3524 2h  70M U|580   . t?[T"
+				'sec-websocket-key2': "g299681m859\\  8"
 				origin: "localhost"
-		@head = new buffer.Buffer(8)
+		@head = new buffer.Buffer(['\x00','\x00','\x00','\x00','\x00','\x00','\x00','\x00'])
 			
 		@client = new Client("", @request, @socket, @head)
+		@client.head = @head
 	
 	it "should be valid", ->
 		expect(@client).toBeDefined()
@@ -77,13 +80,25 @@ describe "Client", ->
 
 			
 	describe "handshake", ->
+		beforeEach ->
+			@http = http.createServer()
+			@server = new Server()
+			@server.listen(@http)
+			@http.listen(1234)
+		
+		afterEach ->
+			@http.close()
+			@server.close()
+
 		it "should return valid handshake response", ->
-			spyOn(@client, 'getLocation').andReturn('ws://localhost:8000/')
-			spyOn(@client, 'write')
-			@client.handshake()
-			expect(@client.write).toHaveBeenCalled()
-			# With("HTTP/1.1 101 WebSocket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\nSec-WebSocket-Origin: null\r\nSec-WebSocket-Location: ws://localhost:8000/\r\n\r\np$|º¾uhåÈn") # fQJ,fN/4F4!~K~MH
-			
+			runs () =>
+				@ws = new WebSocket 'ws://localhost:1234'
+				expect(@ws.readyState).toEqual 0
+		
+			waits 1000
+
+			runs () =>
+				expect(@ws.readyState).toEqual 1
 			
 	describe "getVersion", ->
 		it "should return 76", ->
