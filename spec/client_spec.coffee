@@ -59,6 +59,23 @@ describe "Client", ->
 			spyOn(@client.socket, 'write').andThrow(new Error())
 			expect(@client.write).toThrow(new Error("Client error writing to socket"))
 			
+	describe "close", ->
+		describe "when READY", ->
+			beforeEach ->
+				@client.state = Client.STATUS_READY
+			
+			it "should write empty packet", ->
+				spyOn @client, 'write'
+				@client.close()
+				expect(@client.write).toHaveBeenCalledWith('\xff\x00', 'binary')
+				
+		describe "when not READY", ->
+			it "should not write empty packet", ->
+				spyOn @client, 'write'
+				@client.close()
+				expect(@client.write).not.toHaveBeenCalled()
+
+			
 	describe "handshake", ->
 		it "should return valid handshake response", ->
 			spyOn(@client, 'getLocation').andReturn('ws://localhost:8000/')

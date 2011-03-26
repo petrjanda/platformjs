@@ -81,6 +81,10 @@ Client.prototype.write = (data, encoding) ->
 		@socket.write data, encoding
 	catch e 
 		throw new Error 'Client error writing to socket' + e
+		
+Client.prototype.close = () ->
+	if @state is Client.STATUS_READY
+		@write '\xff\x00', 'binary'
 	
 # The WebSocket client's handshake appears to HTTP servers to be a regular GET request with an Upgrade offer:
 #
