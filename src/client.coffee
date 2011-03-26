@@ -26,9 +26,18 @@ Client = module.exports = (sid, request, socket, head) ->
 
 	@state = Client.STATUS_OPENING
 	
-	# Start listening for client socket data.
-	@socket.on 'data', (data) => 
-		@dataHandler(data)
+	@socket.setTimeout(0)
+	@socket.setEncoding('utf8')
+	@socket.setKeepAlive(true)
+	
+	# Handler to be called each time incoming data appear in the client socket.
+	# In case there are only 0xFF and 0x00 bytes, the data frame was empty and 
+	# the socket is being closed from the client side.
+	@socket.on 'data', (data) =>
+		if data.length is 2 and data[0] is 0xFF and data[1] is 0x00
+			@state = STATUS_CLOSING;
+		else
+			@emit('data', @, data.substring(1, data.length - 1))
 	
 	# Adjust the head if websocket draft76 is used to connect from client.
 	if @getVersion() == "76"
@@ -36,23 +45,11 @@ Client = module.exports = (sid, request, socket, head) ->
 			@request.upgradeHead = head.slice(0, 8)
 			@firstFrame = head.slice(8, head.length)
 		else
-			@reject("Missing key3")
+			@reject("Missing key3")		
 			
 	return
 	
 sys.inherits(Client, Events.EventEmitter)	
-
-# Handler to be called each time incoming data appear in the client socket.
-# In case there are only 0xFF and 0x00 bytes, the data frame was empty and 
-# the socket is being closed from the client side.
-#
-# @data [String]	Utf8 data received from the client. 
-#
-Client.prototype.dataHandler = (data) =>
-	if data.length is 2 and data[0] is 0xFF and data[1] is 0x00
-		@state = STATUS_CLOSING;
-	else
-		@emit('data', @, data.substring(1, data.length - 1))
 
 # ## Send
 #
