@@ -50,6 +50,10 @@ Server.prototype.listen = (server) ->
 	server.on 'upgrade', (request, socket, head) =>
 		@clients.connect(new Client(utils.uid(), request, socket, head))
 	
+	@clients.on 'data', (client, data) =>
+		Log.info 'server', 'sid=' + client.sid + ' Message received'
+		@clients.broadcast(data)
+	
 	Log.info 'platformjs', 'Started'
 
 # ## Close
@@ -60,3 +64,4 @@ Server.prototype.listen = (server) ->
 Server.prototype.close = () ->
 	@server.removeAllListeners 'upgrade'
 	Log.info 'platformjs', 'Closed'
+

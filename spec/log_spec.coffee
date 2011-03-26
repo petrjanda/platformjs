@@ -12,6 +12,10 @@ describe 'Log', ->
 	describe "when enabled", ->
 		beforeEach ->
 			Log.enabled = true
+			
+		afterEach ->
+			Log.enabled = false
+		
 
 		it "should log info messages", ->
 			spyOn console, 'log'

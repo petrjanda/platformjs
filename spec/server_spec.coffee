@@ -2,6 +2,7 @@ require './spec_helper'
 
 http	= require 'http'
 Server 	= require 'server'
+Buffer	= require('buffer').Buffer
 WebSocket = require('websocket-client').WebSocket
 
 describe "Server", ->
@@ -23,16 +24,24 @@ describe "Server", ->
 		expect(@server.clients).not.toBeUndefined()
 		
 	describe "connection", ->
+		beforeEach ->
+			@socket = 
+				setTimeout: () ->
+				setEncoding: () ->
+				setKeepAlive: () ->
+				on: () ->
+			@head = new Buffer(8)
+			@request = {}
+		
 		it "should be done with ws:// protocol", ->
-			spyOn @server.clients, 'connect'
-
-			runs () =>
-				@ws = new WebSocket 'ws://localhost:1234'
-			
-			waits 1000
-
-			runs () =>
-				expect(@server.clients.connect).toHaveBeenCalled()
+			spyOn @server.clients, 'connect'	
+			@http.emit('upgrade', @request, @socket, @head)
+			expect(@server.clients.connect).toHaveBeenCalled()
+				
+	it "should call broadcast on client data", ->
+		spyOn @server.clients, 'broadcast'
+		@server.clients.emit('data', {sid:""}, "Message")
+		expect(@server.clients.broadcast).toHaveBeenCalledWith("Message")
 	
 	describe "close", ->
 		it "should remove upgrade event listener", ->

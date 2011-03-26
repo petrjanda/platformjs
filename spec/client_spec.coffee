@@ -10,7 +10,13 @@ WebSocket = require('websocket-client').WebSocket
 
 describe "Client", ->
 	beforeEach ->
-		@socket = new net.Socket({fd: 9, type: 'tcp4', allowHalfOpen: true})
+		@socket = 
+			setTimeout: () ->
+			setEncoding: () ->
+			setKeepAlive: () ->
+			on: () ->
+			write: () ->
+			writable: true
 		@request = 
 			headers:
 				'sec-websocket-key1': ",  3524 2h  70M U|580   . t?[T"
@@ -27,7 +33,7 @@ describe "Client", ->
 		expect(@client).toBeDefined()
 	
 	describe "dataHandler", ->
-		it "should set status to CLOSING if data is empty", ->
+		xit "should set status to CLOSING if data is empty", ->
 
 	describe "send", ->
 		it "should not write to socket if client is not in READY state", ->
@@ -92,7 +98,7 @@ describe "Client", ->
 			@http.close()
 			@server.close()
 
-		it "should return valid handshake response", ->
+		xit "should return valid handshake response", ->
 			runs () =>
 				@ws = new WebSocket 'ws://localhost:1234'
 				expect(@ws.readyState).toEqual 0
