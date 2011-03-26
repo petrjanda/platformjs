@@ -1,3 +1,9 @@
+# PlatformJS server for real-time websocket protocol based communication. 
+# Its designed to work in both cases as standalone server or to be attached
+# to other already existing HTTP server based on http.createServer() like
+# express.
+#
+
 url 		= require 'url' 
 net 		= require 'net' 	
 sys 		= require 'sys' 	
@@ -17,13 +23,6 @@ Log			= require 'log'
 process.on 'uncaughtException', (err) ->
 	console.log 'Caught uncaughtException: ' + err.stack
 
-# # PlatformJS Server
-#
-# PlatformJS server for real-time websocket protocol based communication. 
-# Its designed to work in both cases as standalone server or to be attached
-# to other already existing HTTP server based on http.createServer() like
-# express.
-#
 Server = module.exports = () ->
 	@clients = new Clients()
 	@server = null

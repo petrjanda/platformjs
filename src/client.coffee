@@ -1,11 +1,3 @@
-sys			= require 'sys'
-Events		= require 'events'
-url			= require 'url'
-Crypto		= require 'crypto'
-Buffer		= require('buffer').Buffer
-
-# # Client
-#
 # Client represents one connection to the server. Its created in case new
 # connection is coming to server, handshaked and stored in server list in
 # case the handshake result is ok.
@@ -16,6 +8,12 @@ Buffer		= require('buffer').Buffer
 # http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
 # http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-76
 #
+sys			= require 'sys'
+Events		= require 'events'
+url			= require 'url'
+Crypto		= require 'crypto'
+Buffer		= require('buffer').Buffer
+
 Client = module.exports = (sid, request, socket, head) ->
 	process.EventEmitter.call(this)
 	
