@@ -1,6 +1,6 @@
 {
   "name": "platformjs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Websockets server for node.js",
   "main": "lib/server.js",
   "keywords": [ "websocket", "server", "realtime", "coffeescript" ],
