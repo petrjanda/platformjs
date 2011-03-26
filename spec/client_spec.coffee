@@ -116,7 +116,6 @@ describe "Client", ->
 				@client.request.headers.host = null
 			
 			it "should return undefined", ->
-				console.log @client.request.headers.host?
 				expect(@client.getLocation(@client.request)).toEqual(undefined)
 		
 		describe "with valid headers", ->

@@ -13,6 +13,7 @@ Events		= require 'events'
 url			= require 'url'
 Crypto		= require 'crypto'
 Buffer		= require('buffer').Buffer
+Log			= require 'log'
 
 Client = module.exports = (sid, request, socket, head) ->
 	process.EventEmitter.call(this)
@@ -66,7 +67,7 @@ Client.prototype.send = (data) ->
 			@write data, 'utf8'
 			@write '\xff', 'binary'
 		catch e
-			sys.log e
+			Log.error 'client', e
 
 # Write data using the specified encoding to the socket.
 #
@@ -128,7 +129,7 @@ Client.prototype.handshake = () ->
 		spaces2 = strkey2.replace(/[^\ ]/g, "").length
 
 		if spaces1 is 0 or spaces2 is 0 or numkey1 % spaces1 != 0 || numkey2 % spaces2 != 0
-			sys.log '[client] WebSocket contained an invalid key!'
+			Log.error 'client', 'WebSocket contained an invalid key!'
 		else
 			hash = Crypto.createHash("md5")
 			key1 = @pack numkey1 / spaces1
@@ -178,7 +179,7 @@ Client.prototype.getOrigin = () ->
 #
 Client.prototype.getLocation = (request) ->
 	unless request.headers.host?
-		sys.log "Missing host header"
+		Log.error 'client', 'Missing host header'
 		return
 
 	location = ""

@@ -41,7 +41,7 @@ Clients.prototype.connect = (client) ->
 			@emit 'data', client, data
 		
 		client.addListener 'ready', (client) =>
-			console.log Log.greenify('[clients]') + ' new connection'
+			Log.info 'clients', 'new connection'
 			@emit 'ready', client
 		
 		client.handshake()

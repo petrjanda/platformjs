@@ -17,5 +17,9 @@ var server = http.createServer(function (req, res) {
 server.listen(8000, "127.0.0.1");
 
 // Create platform.js instance
-var platformjs = new Server()
+var options = {
+	verbose: true
+}
+
+var platformjs = new Server(options)
 platformjs.listen(server);

@@ -23,9 +23,19 @@ Log			= require 'log'
 process.on 'uncaughtException', (err) ->
 	console.log 'Caught uncaughtException: ' + err.stack
 
-Server = module.exports = () ->
+Server = module.exports = (options) ->
+
+	@config = options || {
+		verbose: false
+	}
+	
 	@clients = new Clients()
 	@server = null
+	
+	if @config.verbose
+		Log.enabled = true
+		
+	return
 
 # ## Listen
 #
@@ -40,7 +50,7 @@ Server.prototype.listen = (server) ->
 	server.on 'upgrade', (request, socket, head) =>
 		@clients.connect(new Client(utils.uid(), request, socket, head))
 	
-	console.log(Log.greenify('[platformjs]') + ' Started')
+	Log.info 'platformjs', 'Started'
 
 # ## Close
 #
@@ -49,4 +59,4 @@ Server.prototype.listen = (server) ->
 #
 Server.prototype.close = () ->
 	@server.removeAllListeners 'upgrade'
-	console.log(Log.greenify('[platformjs]') + ' Closed')
+	Log.info 'platformjs', 'Closed'
