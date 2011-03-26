@@ -1,13 +1,3 @@
-#
-# Platform.js
-# Copyright(c) 2010 Petr Janda
-# MIT Licensed
-#
-
-sys 	= require 'sys'
-Events 	= require 'events'
-
-#
 # Channel instance to represent one data channel on the server. Each client is connected
 # to at least one or multiple channels with possibility to send message to any of them.
 # Message is widespread in channel to all its connected clients. No targeted messages are allowed.
@@ -15,6 +5,10 @@ Events 	= require 'events'
 # The best way to establish 1:1 communication is to create private channel with only 2 clients
 # connected to it.
 #
+
+sys 	= require 'sys'
+Events 	= require 'events'
+
 Channel = module.exports = (title) ->
 	@title = title
 	@clientsCount = 0
