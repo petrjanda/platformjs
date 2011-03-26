@@ -2,7 +2,11 @@
 
 ## Installation
 
-To be able to use PlatformJS on your system, you can install it with npm package manager
+In order to install you will need the npm package manager for node.js. Go to the:
+
+	https://github.com/isaacs/npm
+	
+and follow the installation instructions. When you have npm successfully installed do:
 
 	npm install platformjs
 
@@ -19,12 +23,14 @@ it whenever you want by calling .close() method of the very same class. And that
 
 Run the command:
 
-	platformjs
-	
-For additional parameters you can pass run the:
+	bin/platformjs
 
-	platformjs help
+This will start new server on port 8000.
 	
+Note:
+There is the testing JavaScript application in public/ folder which can be used to test the server. It works in any browser
+which support the websocket protocol (latest draft76).
+		
 ### Add to your server
 
 	// Require the platformjs script
