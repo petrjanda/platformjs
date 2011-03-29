@@ -1,0 +1,6 @@
+## Usage
+
+1. Install platform.js websocket server
+2. node backend/src/index.js your_twitter_username your_twitter_password
+3. Open frontend/index.html in your webserver
+4. Watch the new tweets coming in real-time :-)
