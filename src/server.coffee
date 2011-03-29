@@ -11,9 +11,9 @@ http 		= require 'http'
 connect 	= require 'connect' 
 utils 		= connect.utils
 	
-Client		= require 'client'
-Clients 	= require 'clients'
-Log			= require 'log'
+Client		= require './client'
+Clients 	= require './clients'
+Log			= require './log'
 
 # ## Global exceptions handling
 # 
@@ -45,6 +45,14 @@ Server = module.exports = (options) ->
 # handled by HTTP server as usual without PlatformJS server.
 #
 Server.prototype.listen = (server) ->
+
+	unless server?
+		server = http.createServer (req, res) ->
+			res.writeHead(200, {'Content-Type': 'text/plain'})
+			res.end()
+			
+		server.listen(8000)
+
 	@server = server
 
 	server.on 'upgrade', (request, socket, head) =>

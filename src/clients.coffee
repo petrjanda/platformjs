@@ -1,8 +1,8 @@
 url			= require 'url'
 sys			= require 'sys'
 Events		= require 'events' 
-Client		= require 'client'
-Log			= require 'log'
+Client		= require './client'
+Log			= require './log'
 
 # # Clients
 #

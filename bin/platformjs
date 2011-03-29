@@ -6,12 +6,11 @@ require.paths.unshift(path.resolve(__dirname, '../lib/'));
 
 var sys 		= require('sys'),
 	Server		= require('server'),
-	express		= require('express'),
 	http		= require('http');
 	
 var server = http.createServer(function (req, res) {
 	res.writeHead(200, {'Content-Type': 'text/plain'});
-	res.end('Hello World\n');
+	res.end();
 });
 
 server.listen(8000, "127.0.0.1");

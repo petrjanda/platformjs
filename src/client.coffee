@@ -13,7 +13,7 @@ Events		= require 'events'
 url			= require 'url'
 Crypto		= require 'crypto'
 Buffer		= require('buffer').Buffer
-Log			= require 'log'
+Log			= require './log'
 
 Client = module.exports = (sid, request, socket, head) ->
 	process.EventEmitter.call(this)
