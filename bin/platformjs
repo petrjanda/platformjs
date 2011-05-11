@@ -17,8 +17,16 @@ server.listen(8000, "127.0.0.1");
 
 // Create platform.js instance
 var options = {
-	verbose: true
+	verbose: false
 }
 
 var platformjs = new Server(options);
 platformjs.listen(server);
+
+platformjs.on('connection', function(client) {
+	console.log(client.sid);
+})
+
+platformjs.on('message', function(message, client) {
+	console.log(message);
+})

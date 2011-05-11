@@ -4,17 +4,17 @@
 # express.
 #
 
-url 			= require 'url' 
-net 			= require 'net' 	
-sys 			= require 'sys' 	
-http 			= require 'http' 
-connect 		= require 'connect' 
-utils 			= connect.utils
+url 		= require 'url' 
+net 		= require 'net' 	
+sys 		= require 'sys' 	
+http 		= require 'http' 
+connect 	= require 'connect' 
+utils 		= connect.utils
 	
-Client			= require './client'
-Clients 		= require './clients'
-Log				= require './log'
-EventEmitter	= require('events').EventEmitter
+Client		= require './client'
+Clients 	= require './clients'
+Log			= require './log'
+Events		= require 'events'
 
 # ## Global exceptions handling
 # 
