@@ -45,11 +45,12 @@ Client = module.exports = (sid, request, socket, head) ->
 			@request.upgradeHead = head.slice(0, 8)
 			@firstFrame = head.slice(8, head.length)
 		else
-			@reject("Missing key3")		
+			# Missing key3
+			@close()
 			
 	return
 	
-sys.inherits(Client, Events.EventEmitter)	
+sys.inherits(Client, Events.EventEmitter)
 
 # ## Send
 #
@@ -106,6 +107,8 @@ Client.prototype.close = () ->
 Client.prototype.handshake = () ->
 	res = null
 	location = @getLocation @request
+
+	console.log sys.inspect @request.headers
 
 	if location
 		res = 'HTTP/1.1 101 WebSocket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\nSec-WebSocket-Origin: ' + @getOrigin() + '\r\nSec-WebSocket-Location: ' + location

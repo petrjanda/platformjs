@@ -4,16 +4,17 @@
 # express.
 #
 
-url 		= require 'url' 
-net 		= require 'net' 	
-sys 		= require 'sys' 	
-http 		= require 'http' 
-connect 	= require 'connect' 
-utils 		= connect.utils
+url 			= require 'url' 
+net 			= require 'net' 	
+sys 			= require 'sys' 	
+http 			= require 'http' 
+connect 		= require 'connect' 
+utils 			= connect.utils
 	
-Client		= require './client'
-Clients 	= require './clients'
-Log			= require './log'
+Client			= require './client'
+Clients 		= require './clients'
+Log				= require './log'
+EventEmitter	= require('events').EventEmitter
 
 # ## Global exceptions handling
 # 
@@ -36,6 +37,8 @@ Server = module.exports = (options) ->
 		Log.enabled = true
 		
 	return
+	
+sys.inherits Server, Events.EventEmitter
 
 # ## Listen
 #
@@ -60,7 +63,11 @@ Server.prototype.listen = (server) ->
 	
 	@clients.on 'data', (client, data) =>
 		Log.info 'server', 'sid=' + client.sid + ' Message received'
-		@clients.broadcast(data)
+		@emit 'message', data, client
+		
+	@clients.on 'ready', (client) =>
+		Log.info 'server', 'Client #' + client.sid + ' connected'
+		@emit 'connection', client
 	
 	Log.info 'platformjs', 'Started'
 

@@ -20,5 +20,5 @@ var options = {
 	verbose: true
 }
 
-var platformjs = new Server(options)
+var platformjs = new Server(options);
 platformjs.listen(server);
