@@ -2,16 +2,31 @@
   "name": "platformjs",
   "version": "0.1.3",
   "description": "Websockets server for node.js",
-  "main": "lib/server.js",
+  "main": "index.js",
   "keywords": [ "websocket", "server", "realtime", "coffeescript" ],
-  "engines": { "node": "0.4.2" },
-  "directories": { "lib": "./lib", "bin": "./bin" },
-  "bin": { "platformjs": "bin/platformjs"},
-  "devDependencies":{
-    "jasmine-node": ">=1.0.0rc1",
-	"coffee-script": ">=1.0.1"
+
+  "engines": { 
+    "node": "0.4.2" 
+   },
+
+  "directories": { 
+    "lib": "./lib", 
+    "bin": "./bin" 
   },
-  "files": [ "bin", "lib" ],
-  "repository": { "type": "git", "url": "git://github.com/petrjanda/platformjs.git" },
+
+  "bin": { 
+    "platformjs": "bin/platformjs"
+  },
+
+  "devDependencies": {
+    "jasmine-node": ">=1.0.0rc1",
+    "coffee-script": ">=1.0.1"
+  },
+
+  "repository": { 
+    "type": "git", 
+    "url": "git://github.com/petrjanda/platformjs.git" 
+  },
+
   "author": "Petr Janda <petrjanda@me.com> (http://petrjanda.tumblr.com)"
 }
