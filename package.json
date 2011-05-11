@@ -30,7 +30,7 @@
 
   "dependencies": {
     "connect": "1.4.1"
-  }
+  },
 
   "author": "Petr Janda <petrjanda@me.com> (http://petrjanda.tumblr.com)"
 }
