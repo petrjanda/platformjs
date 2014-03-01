@@ -4,7 +4,7 @@ var path		= require('path')
 
 require.paths.unshift(path.resolve(__dirname, '../lib/'));
 
-var sys 		= require('sys'),
+var util = require('util'),
 	Server		= require('server'),
 	http		= require('http');
 	
